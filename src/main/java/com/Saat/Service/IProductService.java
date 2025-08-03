@@ -7,5 +7,6 @@ public interface IProductService  {
 	
 	public DtoProduct saveProduct(Product product);
 	public DtoProduct findbyProductid(Long id);
+	public Product referenceProduct(Long id);
 
 }

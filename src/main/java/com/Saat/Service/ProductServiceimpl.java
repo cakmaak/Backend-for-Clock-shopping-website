@@ -39,4 +39,13 @@ public class ProductServiceimpl implements IProductService {
 		return dtoProduct;
 	}
 
+	@Override
+	public Product referenceProduct(Long id) {
+		
+		Optional<Product> optional=productRepository.findById(id);
+		
+		Product product= optional.get();
+		return product;
+	}
+
 }

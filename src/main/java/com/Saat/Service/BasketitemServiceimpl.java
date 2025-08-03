@@ -8,12 +8,14 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.Saat.Dto.DtoBasketitem;
 import com.Saat.Dto.DtoProduct;
 import com.Saat.Entity.Basket;
 import com.Saat.Entity.BasketItem;
+import com.Saat.Entity.BasketitemRequest;
 import com.Saat.Entity.Product;
 import com.Saat.Entity.User;
 import com.Saat.Repository.BasketitemRepository;
@@ -35,24 +37,42 @@ public class BasketitemServiceimpl implements IBasketitem {
 	
 	@Autowired
 	IUserService userService;
-	
-	
+
 	@Override
-	public DtoBasketitem saveBasketitem(Long id,int quant) {
-		
-		  Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		    String email = auth.getName();
+	public DtoBasketitem saveBasketitem(BasketitemRequest request) {
+		 
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
+		    throw new RuntimeException("Lütfen giriş yapınız.");
+		}
+
+		Object principal = auth.getPrincipal();
+		String email;
+
+		if (principal instanceof User) {
+		    email = ((User) principal).getEmail();
+		} else if (principal instanceof UserDetails) {
+		    email = ((UserDetails) principal).getUsername(); // Eğer email burada tutuluyorsa
+		} else {
+		    throw new RuntimeException("Bilinmeyen principal tipi: " + principal.getClass().getName());
+		}
+
+		User user = userService.getUserbyEmail(email);
 
 		    
-		    User user =userService.getUserbyEmail(email);
+		    
 
 		    
 		     Basket basket = basketService.getOrCreateBasketByUser(user);
 
-		    
-		    DtoProduct dtoProduct = productService.findbyProductid(id);
+		     
+		     
+		     Long productId = Long.valueOf(request.getProductid());
+		    DtoProduct dtoProduct = productService.findbyProductid(productId);
 		    Product product = new Product();
-		    BeanUtils.copyProperties(dtoProduct, product);
+		    product =productService.referenceProduct(productId);
+		    
 
 		    
 		    BasketItem basketItem = new BasketItem();
@@ -61,7 +81,7 @@ public class BasketitemServiceimpl implements IBasketitem {
 		    basketItem.setOlusturmatarihi(LocalDateTime.now());
 		    basketItem.setProduct(product);
 		    basketItem.setBasket(basket); 
-		    basketItem.setAdet(quant);
+		    basketItem.setAdet(request.getQuantity());
 		    
 		    
 		    basketitemRepository.save(basketItem);
@@ -70,19 +90,23 @@ public class BasketitemServiceimpl implements IBasketitem {
 		    dtoBasketitem.setProductId(product.getId());
 		    dtoBasketitem.setProductIsim(product.getIsim());
 		    dtoBasketitem.setFiyat(product.getFiyat());
-		    dtoBasketitem.setAdet(quant); 
+		    dtoBasketitem.setAdet(request.getQuantity());
 		    dtoBasketitem.setIndirim(product.getIndirim());
 		    dtoBasketitem.setBasketid(basket.getId());
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		return dtoBasketitem ;
+		    
+		    
+		    
+		return dtoBasketitem;
 	}
+
+
+
+	
+
+	
+	
+	
+	
+	
 
 }

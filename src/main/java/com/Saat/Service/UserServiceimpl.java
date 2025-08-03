@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +20,11 @@ public class UserServiceimpl implements IUserService {
 	@Autowired
 	UserRepository userRepository;
 	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
+	
+	 public UserServiceimpl(@Lazy PasswordEncoder passwordEncoder) {
+	        this.passwordEncoder = passwordEncoder;
+	    }
 
 	@Override
 	public List<DtoUser> findByuserid(String name) {
@@ -50,13 +54,24 @@ public class UserServiceimpl implements IUserService {
 	}
 	@Override
 	public User getUserbyEmail(String email) {
-		return userRepository.findByEmail(email).orElseThrow(()->  new RuntimeException("kullanıcı bulunamadi"));
-		
-		
+		System.out.println("DB'de aranıyor (IgnoreCase): " + email);
+
+	    Optional<User> userOpt = userRepository.findByEmailIgnoreCase(email.trim());
+
+	    if(userOpt.isPresent()) {
+	        User user = userOpt.get();
+
+	        System.out.println("Kullanıcı bulundu: " + user.getEmail());
+
+	        return user;
+	    } else {
+	        throw new RuntimeException("kullanıcı bulunamadi");
+	    }
+	}
 	}
 
 	
 	
 	
 
-}
+
