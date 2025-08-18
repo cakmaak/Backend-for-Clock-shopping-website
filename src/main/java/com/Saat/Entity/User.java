@@ -45,8 +45,7 @@ public class User {
 	@Column(nullable = false,name = "password")
 	private String password;
 	
-	
-	
+		
 	
 	@Column(name = "kayittarihi")
 	private LocalDateTime kayittarihi;

@@ -1,5 +1,8 @@
 package com.Saat.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -43,9 +46,69 @@ public class ProductServiceimpl implements IProductService {
 	public Product referenceProduct(Long id) {
 		
 		Optional<Product> optional=productRepository.findById(id);
-		
 		Product product= optional.get();
 		return product;
 	}
 
-}
+	@Override
+	public DtoProduct updateProduct(Product newproduct,Long id) {
+		
+		Optional<Product> optional=productRepository.findById(id);
+		Product product=optional.orElseThrow(() -> new RuntimeException("Ürün bulunamadı"));
+		product.setAciklama(newproduct.getAciklama());
+		product.setCategory(newproduct.getCategory());
+		product.setCinsiyet(newproduct.getCinsiyet());
+		product.setEklenmetarihi(LocalDateTime.now());
+		product.setFiyat(newproduct.getFiyat());
+		product.setMarka(newproduct.getMarka());
+		product.setModel(newproduct.getModel());
+		product.setIsim(newproduct.getIsim());
+		product.setStok(newproduct.getStok());
+		product.setPuan(newproduct.getPuan());
+		product.setUrl(newproduct.getUrl());
+		product.setIndirim(newproduct.getIndirim());
+		
+		productRepository.save(product);
+		
+		DtoProduct dtoProduct=new DtoProduct();
+		BeanUtils.copyProperties(product, dtoProduct);
+		
+		
+		
+		
+		
+		
+		
+		return dtoProduct;
+	}
+
+	@Override
+	public List<Product> getAllproducts() {
+		List<Product> products=productRepository.findAll();
+		return products;
+	}
+
+	@Override
+	public String updateurl(Long id  ,String url) {
+		Optional<Product>  optional =productRepository.findById(id);
+		Product product=optional.get();
+		product.setUrl(url);
+		productRepository.save(product);
+		return url;
+	}
+
+	@Override
+	public DtoProduct deleteproduct(Long id) {
+		Optional<Product> optional=productRepository.findById(id);
+		Product product=optional.get();
+		DtoProduct dtoProduct=new DtoProduct();
+		BeanUtils.copyProperties(product, dtoProduct);
+		productRepository.delete(product);
+		
+		return dtoProduct;
+	}
+
+	
+	}
+
+

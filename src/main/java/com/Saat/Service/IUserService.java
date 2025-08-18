@@ -14,5 +14,6 @@ public interface IUserService {
 public List<DtoUser> findByuserid(String name);
 public DtoUser saveuser(User newuser);
 public User getUserbyEmail(String email);
+public User getuser();
 
 }

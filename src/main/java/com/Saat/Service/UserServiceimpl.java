@@ -7,6 +7,9 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,9 @@ public class UserServiceimpl implements IUserService {
 	
 	@Autowired
 	UserRepository userRepository;
+	
+	
+	
 	
 	private final PasswordEncoder passwordEncoder;
 	
@@ -67,6 +73,28 @@ public class UserServiceimpl implements IUserService {
 	    } else {
 	        throw new RuntimeException("kullanıcı bulunamadi");
 	    }
+	}
+
+	@Override
+	public User getuser() {
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
+	        throw new RuntimeException("Lütfen giriş yapınız.");
+	    }
+	    String email;
+	    Object principal = auth.getPrincipal();
+	    if (principal instanceof UserDetails) {
+	        email = ((UserDetails) principal).getUsername();
+	    } else if (principal instanceof User) {
+	        email = ((User) principal).getEmail();
+	    } else {
+	        throw new RuntimeException("Bilinmeyen principal tipi");
+	    }
+	    
+	    User user=getUserbyEmail(email);
+
+		return user;
 	}
 	}
 

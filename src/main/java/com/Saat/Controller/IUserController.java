@@ -8,5 +8,6 @@ import com.Saat.Entity.User;
 public interface IUserController {
 	public DtoUser saveuser(User newuser);
 	public List<DtoUser> findByuserid(String name);
+	public User getuser();
 
 }

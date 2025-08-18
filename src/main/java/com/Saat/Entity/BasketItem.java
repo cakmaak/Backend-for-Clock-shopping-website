@@ -3,6 +3,10 @@ package com.Saat.Entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -45,6 +49,7 @@ public class BasketItem {
 		
 	}
 	
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "basket_id")
 	private Basket basket;

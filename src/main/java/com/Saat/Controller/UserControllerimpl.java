@@ -52,6 +52,13 @@ public class UserControllerimpl implements IUserController {
 	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
 	        }
 	    }
+
+	 @Override
+	 @GetMapping("/getuser")
+	 public User getuser() {
+		
+		return userService.getuser();
+	 }
 	
 	
 }

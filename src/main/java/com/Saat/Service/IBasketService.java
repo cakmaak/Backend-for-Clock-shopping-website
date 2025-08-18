@@ -7,6 +7,8 @@ import com.Saat.Entity.User;
 public interface IBasketService  {
 	
 	public Basket getOrCreateBasketByUser(User user);
+	public int setquantityinbasket(Long basketitemid,  int newquantity); 
+	
 	
 	
 

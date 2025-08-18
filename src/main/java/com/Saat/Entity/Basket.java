@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,8 +44,9 @@ public class Basket {
         olusturmatarihi = LocalDateTime.now();
         isactive = true;
     }
-
-    @OneToMany(mappedBy = "basket", cascade = CascadeType.ALL)
+    
+    @JsonManagedReference
+    @OneToMany(mappedBy = "basket", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<BasketItem> basketItems = new ArrayList<>();
 
     @ManyToOne

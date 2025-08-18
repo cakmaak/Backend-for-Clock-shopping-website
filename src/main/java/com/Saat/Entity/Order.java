@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.Saat.Enums.Status;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -59,7 +60,7 @@ public class Order {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 	
-	
+	@JsonManagedReference
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private List<OrderItem> itemlist=new ArrayList<>();
 	
