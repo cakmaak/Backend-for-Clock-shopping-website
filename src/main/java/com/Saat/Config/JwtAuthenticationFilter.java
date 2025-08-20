@@ -3,23 +3,21 @@ package com.Saat.Config;
 import java.io.IOException;
 import java.util.Collections;
 
-import com.Saat.Service.IUserService;
-import com.Saat.Config.JwtTokenUtil;
 import com.Saat.Entity.User;
+import com.Saat.Service.IUserService;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-	
-
 
     private final IUserService userService;
     private final JwtTokenUtil jwtTokenUtil;
@@ -28,12 +26,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.userService = userService;
         this.jwtTokenUtil = jwtTokenUtil;
     }
-    
-    
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
+
+        String path = request.getServletPath();
+
+        // Public endpoint whitelist
+        if (path.startsWith("/saatciapo/user/saveuser") ||
+            path.startsWith("/saatciapo/user/login") ||
+            path.startsWith("/saatciapo/product/getallproduct") ||
+            path.startsWith("/saatciapo/product/updateurl") ||
+            path.startsWith("/register") ||
+            path.startsWith("/auth/")) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         final String authHeader = request.getHeader("Authorization");
         String userEmail = null;
@@ -55,12 +67,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 System.out.println("DB'den bulunan kullanıcı email: '" + user.getEmail() + "'");
 
                 UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+                        new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             } catch (RuntimeException e) {
                 System.out.println("Kullanıcı bulunamadı: " + userEmail);
-                // Burada hata fırlatma yok, sadece logla
             }
         }
 
