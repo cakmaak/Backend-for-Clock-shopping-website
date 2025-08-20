@@ -71,7 +71,7 @@ public class SecurityConfig {
             		.requestMatchers("/saatciapo/user/login"
             				, "/auth/**",
             				"/register",
-            				"/saatciapo/user/saveuser"
+            				"/saatciapo/user/saveuser/**"
             				,"/saatciapo/product/getallproduct"
             				,"/saatciapo/product/updateurl"
             				
