@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="orderitem")
+@Table(name="orderitem",schema = "clock")
 public class OrderItem {
 	
 	

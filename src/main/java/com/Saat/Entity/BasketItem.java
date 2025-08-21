@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "basketitem")
+@Table(name = "basketitem",schema = "clock")
 public class BasketItem {
 	
 	@Id
