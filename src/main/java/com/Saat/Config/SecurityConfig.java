@@ -72,7 +72,8 @@ public class SecurityConfig {
             				"/register",
             				"/saatciapo/user/saveuser"
             				,"/saatciapo/product/getallproduct"
-            				,"/saatciapo/product/updateurl"
+            				,"/saatciapo/product/updateurl",
+            				"/saatciapo/product/saveproduct"
             				
             				
             				).permitAll()
