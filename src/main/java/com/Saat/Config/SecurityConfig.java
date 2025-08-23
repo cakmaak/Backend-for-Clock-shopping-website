@@ -50,7 +50,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173","https://clockshop-frontend.up.railway.app","https://frontend-for-clock-shopping-website-sigma.vercel.app")); // React çalıştığın adres
+        configuration.setAllowedOrigins(List.of("http://localhost:5173","https://clockshop-frontend.up.railway.app","https://frontend-for-clock-shopping-website-sigma.vercel.app","https://frontend-for-clock-shopping-website.vercel.app")); // React çalıştığın adres
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(false); // Token/cookie kullanıyorsan true olmalı
